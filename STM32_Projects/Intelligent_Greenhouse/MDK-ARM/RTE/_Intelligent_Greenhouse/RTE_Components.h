@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'Green_house' 
- * Target:  'Green_house' 
+ * Project: 'Intelligent_Greenhouse' 
+ * Target:  'Intelligent_Greenhouse' 
  */
 
 #ifndef RTE_COMPONENTS_H

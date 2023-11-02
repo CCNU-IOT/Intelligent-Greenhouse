@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Green_house</TargetName>
+      <TargetName>Intelligent_Greenhouse</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
@@ -48,8 +48,8 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Green_house\</OutputDirectory>
-          <OutputName>Green_house</OutputName>
+          <OutputDirectory>.\</OutputDirectory>
+          <OutputName>Intelligent_Greenhouse</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -509,7 +509,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="4.3.0" condition="CMSIS Core">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="4.5.0"/>
         <targetInfos>
-          <targetInfo name="Green_house"/>
+          <targetInfo name="Intelligent_Greenhouse"/>
         </targetInfos>
       </component>
     </components>
