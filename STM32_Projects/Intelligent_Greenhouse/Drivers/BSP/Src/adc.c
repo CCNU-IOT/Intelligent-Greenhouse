@@ -1,9 +1,9 @@
-#include "Drivers\BSP\Inc\adc.h"
-
-    ADC_HandleTypeDef hadc;
+#include "../Inc/adc.h"
 
 void ADC_Init(void) 
 {
+
+    ADC_HandleTypeDef hadc;
     hadc.Instance = ADC1; //选择ADC1
 
     // ADC初始化结构体配置
@@ -19,7 +19,7 @@ void ADC_Init(void)
     HAL_ADCEx_Calibration_Start(&hadc);
 }
 
-HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) //会被HAL_ADC_Init函数所调用的MSP回调函数，用来存放使能ADC和通道对应IO的时钟和初始化IO口等代码
+void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) //会被HAL_ADC_Init函数所调用的MSP回调函数，用来存放使能ADC和通道对应IO的时钟和初始化IO口等代码
 {
 if(hadc->Instance == ADC1)
  {
@@ -43,8 +43,9 @@ if(hadc->Instance == ADC1)
 }
 
 // 读取ADC值
-uint16_t ADC_Read(ADC_HandleTypeDef hadc, uint32_t channel) 
+uint16_t ADC_Read(uint32_t channel) 
 {
+    ADC_HandleTypeDef hadc;
     ADC_ChannelConfTypeDef sConfig; //通道配置结构体变量
 
     // 配置ADC通道
@@ -59,8 +60,20 @@ uint16_t ADC_Read(ADC_HandleTypeDef hadc, uint32_t channel)
     HAL_ADC_Start(&hadc);
 
     // 等待转换完成
-    HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY);
+    HAL_ADC_PollForConversion(&hadc, 10);
 
     // 读取ADC值
     return HAL_ADC_GetValue(&hadc);
+}
+
+// 求多次读取平均值
+uint16_t ADC_getAverage( uint8_t times, uint32_t channel)
+{
+    uint8_t sum = 0;
+        for (uint8_t i = 0; i < times; i++)     /* 获取times次数据 */
+    {
+        sum += ADC_Read(channel);
+        HAL_Delay(5);
+    }
+
 }
