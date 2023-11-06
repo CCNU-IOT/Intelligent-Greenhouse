@@ -75,5 +75,5 @@ uint16_t ADC_getAverage( uint8_t times, uint32_t channel)
         sum += ADC_Read(channel);
         HAL_Delay(5);
     }
-
+    return sum/times;
 }
