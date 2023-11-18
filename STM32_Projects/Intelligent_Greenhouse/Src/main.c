@@ -97,16 +97,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-u1_printf("DO:%d\r\n",sensor_read());
 		if(sensor_read())
-    {
-			u1_printf("没有雨水出现！\r\n");
-		}
-		else{
-			u1_printf("有雨水出现！\r\n");
-		}
-		humidity = (float)(ADC_getAverage(20,1))*(3.3/4096);// 20次，通道1
-		u1_printf("rain：%.2f\r\n",humidity);
+			printf("干燥\r\n");
+		else
+			printf("潮湿\r\n");
+      
+		humidity = (float)(ADC_getAverage(20,1))*(3.3/4096);// 采集20次，通道1，参考电压为3.3v
+		  printf("rain：%.2f\r\n",humidity);
+
 		Delay_Ms(1000);
     /* USER CODE BEGIN 3 */
   }
