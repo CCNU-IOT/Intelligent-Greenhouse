@@ -57,7 +57,20 @@
 /* External variables --------------------------------------------------------*/
 
 /* USER CODE BEGIN EV */
+void EXTI0_IRQHandler(void) //KEY_UP中断函数
+{
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+}
 
+void EXTI4_IRQHandler(void) //KEY0中断函数
+{
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+}
+
+void EXTI3_IRQHandler(void) //KEY1中断函数 
+{
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
+}
 /* USER CODE END EV */
 
 /******************************************************************************/

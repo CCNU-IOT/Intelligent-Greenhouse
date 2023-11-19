@@ -87,6 +87,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  key_init_it();
   ADC_Init();
   sensor_init();
   uint8_t humidity; // 土壤湿度值
@@ -97,15 +98,17 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		if(sensor_read())
-			printf("干燥\r\n");
-		else
-			printf("潮湿\r\n");
-      
-		humidity = (float)(ADC_getAverage(20,1))*(3.3/4096);// 采集20次，通道1，参考电压为3.3v
-		  printf("rain：%.2f\r\n",humidity);
 
-		Delay_Ms(1000);
+		// if(sensor_read())
+		// 	printf("干燥\r\n");
+		// else
+		// 	printf("潮湿\r\n");
+      
+		// humidity = (float)(ADC_getAverage(20,1))*(3.3/4096);// 采集20次，通道1，参考电压为3.3v
+		//   printf("rain：%.2f\r\n",humidity);
+
+		// Delay_Ms(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
