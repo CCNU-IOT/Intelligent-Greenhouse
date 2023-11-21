@@ -24,6 +24,8 @@
 /* USER CODE BEGIN Includes */
 #include "../Inc/adc.h"
 #include "uart.h"
+#include "key_new.h"
+#include "relay.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,25 +81,31 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  //MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  key_init_it();
-  ADC_Init();
-  sensor_init();
-  uint8_t humidity; // 土壤湿度值
+  /*------------------按键控制水泵-------------------*/
+  /*------按下KEY_UP开启水泵，按下其余按钮关闭水泵-----*/
+  key_init_it();	
+  Relay_Init();
+  /*------------------按键控制水泵-------------------*/
+  //uint8_t humidity; // 土壤湿度值
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    //HAL_Delay(1000);
     /* USER CODE END WHILE */
+	  // Relay_On();
+	  // HAL_Delay(1000);
+    // Relay_Off();
+    // HAL_Delay(1000);
 
 		// if(sensor_read())
 		// 	printf("干燥\r\n");

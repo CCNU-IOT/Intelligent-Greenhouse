@@ -26,8 +26,15 @@ JLinkLog.txt
 *.htm
 *.sct
 *.map
+*.hex
+*.uvoptx
+*.uvprojx
+*.scvd
 
 *.dbgconf
 
 
 .vscode
+.gitignore
+STM32_Projects/Intelligent_Greenhouse/MDK-ARM/Intelligent_Greenhouse.uvoptx
+STM32_Projects/Intelligent_Greenhouse/MDK-ARM/Intelligent_Greenhouse.hex

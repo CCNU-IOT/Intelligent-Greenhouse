@@ -1,20 +1,21 @@
 #include "key_new.h"
+#include "relay.h"
 
 uint8_t key0_status, key1_status, key_up_status;
 
 void key_init_it(void)                                 /*³õÊ¼»¯°´¼ü£¨ÒÔÖĞ¶Ï·½Ê½£©*/
 {
-    GPIO_InitTypeDef GPIO_InitStruct;
-
     __HAL_RCC_GPIOA_CLK_ENABLE();                   // Ê¹ÄÜGPIOAÊ±ÖÓ
     __HAL_RCC_GPIOE_CLK_ENABLE();                   // Ê¹ÄÜGPIOEÊ±ÖÓ
+
+    GPIO_InitTypeDef GPIO_InitStruct;
 
     GPIO_InitStruct.Pin = KEY_UP_PIN;               // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒı½ÅÎªKEY_UPµÄÒı½Å
     GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;     // ÉèÖÃÒı½Å¹¤×÷Ä£Ê½ÎªÉÏÉıÑØÖĞ¶Ï
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;           // ÉèÖÃÏÂÀ­µç×è
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
     HAL_GPIO_Init(KEY_UP_PORT, &GPIO_InitStruct);   // ³õÊ¼»¯KEY_UP_PORT¶Ë¿Ú
-    HAL_NVIC_SetPriority(EXTI0_IRQn, 4, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
+    HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI0_IRQn);                 // Ê¹ÄÜÍâ²¿ÖĞ¶Ï
 
     GPIO_InitStruct.Pin = KEY0_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒı½ÅÎªKEY0µÄÒı½Å
@@ -22,7 +23,7 @@ void key_init_it(void)                                 /*³õÊ¼»¯°´¼ü£¨ÒÔÖĞ¶Ï·½Ê½£
     GPIO_InitStruct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
     HAL_GPIO_Init(KEY0_PORT, &GPIO_InitStruct);     // ³õÊ¼»¯KEY0_PORT¶Ë¿Ú
-    HAL_NVIC_SetPriority(EXTI4_IRQn, 3, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
+    HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI4_IRQn);                 // Ê¹ÄÜÍâ²¿ÖĞ¶Ï
 
     GPIO_InitStruct.Pin = KEY1_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒı½ÅÎªKEY1µÄÒı½Å
@@ -30,21 +31,40 @@ void key_init_it(void)                                 /*³õÊ¼»¯°´¼ü£¨ÒÔÖĞ¶Ï·½Ê½£
     GPIO_InitStruct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
     HAL_GPIO_Init(KEY1_PORT, &GPIO_InitStruct);     // ³õÊ¼»¯KEY1_PORT¶Ë¿Ú
-    HAL_NVIC_SetPriority(EXTI3_IRQn, 3, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
+    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖĞ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI3_IRQn);                 // Ê¹ÄÜÍâ²¿ÖĞ¶Ï
+}
+
+void EXTI0_IRQHandler(void) //KEY_UPÍâ²¿ÖĞ¶Ï·şÎñ³ÌĞò
+{
+  HAL_GPIO_EXTI_IRQHandler(KEY_UP_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY_UP_PIN); // ÇåÒ»´ÎÖĞ¶Ï£¬±ÜÃâ°´¼ü¶¶¶¯Îó´¥·¢
+}
+
+void EXTI4_IRQHandler(void) //KEY0Íâ²¿ÖĞ¶Ï·şÎñ³ÌĞò
+{
+  HAL_GPIO_EXTI_IRQHandler(KEY0_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY0_PIN); // ÇåÒ»´ÎÖĞ¶Ï£¬±ÜÃâ°´¼ü¶¶¶¯Îó´¥·¢
+}
+
+void EXTI3_IRQHandler(void) //KEY1Íâ²¿ÖĞ¶Ï·şÎñ³ÌĞò
+{
+  HAL_GPIO_EXTI_IRQHandler(KEY1_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY1_PIN); // ÇåÒ»´ÎÖĞ¶Ï£¬±ÜÃâ°´¼ü¶¶¶¯Îó´¥·¢
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    uint32_t i;
+    //HAL_Delay(20); // °´¼üÏû¶¶
+    //uint32_t i;
     switch (GPIO_Pin)
     {   
     case KEY_UP_PIN:
         if(KEY_UP == 1) // KEY_UP°´ÏÂÊ±Òı½Å×´Ì¬Îª¸ßµçÆ½
         {
-            for(i=0; i<0x7fff; i++)
-                if(KEY_UP == 0)
-                    return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY_UP == 0)
+            //         return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
             Relay_On(); // ¶Ì°´KEY_UPÒªÖ´ĞĞµÄ²Ù×÷£º´ò¿ªË®±Ã
         }
         break;
@@ -52,9 +72,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     case KEY0_PIN:
         if(KEY0 == 0) // KEY0°´ÏÂÊ±Òı½Å×´Ì¬ÎªµÍµçÆ½
         {
-            for(i=0; i<0x7fff; i++)
-                if(KEY0 == 1)
-                    return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY0 == 1)
+            //         return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
             Relay_Off(); // ¶Ì°´KEY0ÒªÖ´ĞĞµÄ²Ù×÷£º¹Ø±ÕË®±Ã
         }
         break;
@@ -62,14 +82,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     case KEY1_PIN:
         if(KEY1 == 0) // KEY1°´ÏÂÊ±Òı½Å×´Ì¬ÎªµÍµçÆ½
         {
-            for(i=0; i<0x7fff; i++)
-                if(KEY1 == 1)
-                    return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY1 == 1)
+            //         return; // ¸ÉÈÅ»òÎ´Âú×ã³¤°´Ê±¼äÒªÇó
             Relay_Off(); // ¶Ì°´KEY1ÒªÖ´ĞĞµÄ²Ù×÷£º¹Ø±ÕË®±Ã
         }
-        break;
-    
-    default:
         break;
     }
 }

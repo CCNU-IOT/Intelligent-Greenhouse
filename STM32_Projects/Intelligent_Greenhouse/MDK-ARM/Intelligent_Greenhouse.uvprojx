@@ -419,6 +419,16 @@
               <FileType>1</FileType>
               <FilePath>..\Drivers\BSP\Src\adc.c</FilePath>
             </File>
+            <File>
+              <FileName>key_new.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\BSP\Src\key_new.c</FilePath>
+            </File>
+            <File>
+              <FileName>relay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\BSP\Src\relay.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
