@@ -5,7 +5,36 @@ TIM_HandleTypeDef htim;
 DMA_HandleTypeDef hdma;
 
 // 定义LED数据缓存
-uint8_t ledData[LED_COUNT * 24];
+uint8_t ledData[LED_COUNT * 24];        // 一个灯24位CCR数据
+
+void Timer1_init(void)
+{
+    __HAL_RCC_GPIOA_CLK_ENABLE(); // 使能GPIOA时钟
+    __HAL_RCC_TIM2_CLK_ENABLE();  // 使能TIM2时钟
+    __HAL_RCC_DMA1_CLK_ENABLE();  // 使能DMA1时钟 
+
+    GPIO_InitTypeDef gpio_init_struct;
+    gpio_init_struct.Mode = GPIO_MODE_AF_PP; // PA0设置为复用推挽输出来输出PWM波
+    gpio_init_struct.Pin = GPIO_PIN_0;
+    gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;
+    HAL_GPIO_Init(GPIOA, &gpio_init_struct);
+
+    TIM_Base_InitTypeDef tim_base_init_struct;
+    tim_base_init_struct.Period = 90 - 1; // ARR
+    tim_base_init_struct.Prescaler = 0;   // PSC 不分频
+    tim_base_init_struct.ClockDivision = 0;
+    tim_base_init_struct.CounterMode = TIM_COUNTERMODE_UP; // 向上计数
+    HAL_TIM_Base_Init(&tim_base_init_struct);
+
+    TIM_OC_InitTypeDef  tim_oc_init_struct;
+    tim_oc_init_struct.OCMode = TIM_OCMODE_PWM1; // PWM1模式，小于比较值输出高电平，大于比较值输出低电平
+    tim_oc_init_struct.Pulse = 0; // 比较值初始为0，一直输出低电平
+    tim_oc_init_struct.OCPolarity = TIM_OCPOLARITY_HIGH;
+    HAL_TIM_OC_Init(&tim_oc_init_struct);
+
+    DMA_InitTypeDef dma_init_struct;
+    dma_init_struct.MemDataAlignment = DMA_MDATAALIGN_BYTE;// 外设地址？
+}
 
 void WS2812B_Init(void) 
 {

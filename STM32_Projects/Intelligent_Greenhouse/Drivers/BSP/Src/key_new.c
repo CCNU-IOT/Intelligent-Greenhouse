@@ -8,29 +8,29 @@ void key_init_it(void)                                 /*³õÊ¼»¯°´¼ü£¨ÒÔÖÐ¶Ï·½Ê½£
     __HAL_RCC_GPIOA_CLK_ENABLE();                   // Ê¹ÄÜGPIOAÊ±ÖÓ
     __HAL_RCC_GPIOE_CLK_ENABLE();                   // Ê¹ÄÜGPIOEÊ±ÖÓ
 
-    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitTypeDef gpio_init_struct;
 
-    GPIO_InitStruct.Pin = KEY_UP_PIN;               // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY_UPµÄÒý½Å
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;     // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÉÏÉýÑØÖÐ¶Ï
-    GPIO_InitStruct.Pull = GPIO_PULLDOWN;           // ÉèÖÃÏÂÀ­µç×è
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
-    HAL_GPIO_Init(KEY_UP_PORT, &GPIO_InitStruct);   // ³õÊ¼»¯KEY_UP_PORT¶Ë¿Ú
+    gpio_init_struct.Pin = KEY_UP_PIN;               // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY_UPµÄÒý½Å
+    gpio_init_struct.Mode = GPIO_MODE_IT_RISING;     // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÉÏÉýÑØÖÐ¶Ï
+    gpio_init_struct.Pull = GPIO_PULLDOWN;           // ÉèÖÃÏÂÀ­µç×è
+    gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
+    HAL_GPIO_Init(KEY_UP_PORT, &gpio_init_struct);   // ³õÊ¼»¯KEY_UP_PORT¶Ë¿Ú
     HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖÐ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI0_IRQn);                 // Ê¹ÄÜÍâ²¿ÖÐ¶Ï
 
-    GPIO_InitStruct.Pin = KEY0_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY0µÄÒý½Å
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;    // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÏÂ½µÑØÖÐ¶Ï
-    GPIO_InitStruct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
-    HAL_GPIO_Init(KEY0_PORT, &GPIO_InitStruct);     // ³õÊ¼»¯KEY0_PORT¶Ë¿Ú
+    gpio_init_struct.Pin = KEY0_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY0µÄÒý½Å
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;    // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÏÂ½µÑØÖÐ¶Ï
+    gpio_init_struct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
+    gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
+    HAL_GPIO_Init(KEY0_PORT, &gpio_init_struct);     // ³õÊ¼»¯KEY0_PORT¶Ë¿Ú
     HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖÐ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI4_IRQn);                 // Ê¹ÄÜÍâ²¿ÖÐ¶Ï
 
-    GPIO_InitStruct.Pin = KEY1_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY1µÄÒý½Å
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;    // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÏÂ½µÑØÖÐ¶Ï
-    GPIO_InitStruct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
-    HAL_GPIO_Init(KEY1_PORT, &GPIO_InitStruct);     // ³õÊ¼»¯KEY1_PORT¶Ë¿Ú
+    gpio_init_struct.Pin = KEY1_PIN;                 // Ö¸¶¨ÒªÅäÖÃµÄGPIOÒý½ÅÎªKEY1µÄÒý½Å
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;    // ÉèÖÃÒý½Å¹¤×÷Ä£Ê½ÎªÏÂ½µÑØÖÐ¶Ï
+    gpio_init_struct.Pull = GPIO_PULLUP;             // ÉèÖÃÉÏÀ­µç×è
+    gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // ÉèÖÃ¹¤×÷ËÙ¶ÈÎª¸ßËÙ
+    HAL_GPIO_Init(KEY1_PORT, &gpio_init_struct);     // ³õÊ¼»¯KEY1_PORT¶Ë¿Ú
     HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);         // ÉèÖÃÍâ²¿ÖÐ¶ÏÓÅÏÈ¼¶
     HAL_NVIC_EnableIRQ(EXTI3_IRQn);                 // Ê¹ÄÜÍâ²¿ÖÐ¶Ï
 }

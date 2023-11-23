@@ -15,8 +15,8 @@ void ADC_Init(void)
     hadc.Init.NbrOfDiscConversion = 1;                  // 不连续转换的通道数为1
     hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;    // 外部触发转换使用软件触发方式启动
 
-    HAL_ADC_Init(&hadc);
-    HAL_ADCEx_Calibration_Start(&hadc);
+    HAL_ADC_Init(&hadc);                                // 会调用回调函数HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
+    HAL_ADCEx_Calibration_Start(&hadc);                 // 执行ADC自动自我校准
 }
 
 void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) //会被HAL_ADC_Init函数所调用的MSP回调函数，用来存放使能ADC和通道对应IO的时钟和初始化IO口等代码
