@@ -33,7 +33,8 @@ void Timer1_init(void)
     HAL_TIM_OC_Init(&tim_oc_init_struct);
 
     DMA_InitTypeDef dma_init_struct;
-    dma_init_struct.MemDataAlignment = DMA_MDATAALIGN_BYTE;// Õ‚…Ëµÿ÷∑£ø
+    HAL_DMA_DeInit(DMA1_Channel2);
+    // dma_init_struct.MemDataAlignment = 
 }
 
 void WS2812B_Init(void) 
