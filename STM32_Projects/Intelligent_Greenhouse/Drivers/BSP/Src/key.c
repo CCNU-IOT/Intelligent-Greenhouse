@@ -1,75 +1,91 @@
 #include "key.h"
-#include "btim.h"
-#include "stm32f1xx_hal_gpio.h"
+#include "relay.h"
 
-void key_init(void)                                 /*初始化按键*/
+uint8_t key0_status, key1_status, key_up_status;
+
+void key_init_it(void)                                 /*初始化按键（以中断方式）*/
 {
-    GPIO_InitTypeDef gpio_init_struct;
-
     __HAL_RCC_GPIOA_CLK_ENABLE();                   // 使能GPIOA时钟
     __HAL_RCC_GPIOE_CLK_ENABLE();                   // 使能GPIOE时钟
 
+    GPIO_InitTypeDef gpio_init_struct;
+
     gpio_init_struct.Pin = KEY_UP_PIN;               // 指定要配置的GPIO引脚为KEY_UP的引脚
-    gpio_init_struct.Mode = GPIO_MODE_INPUT;         // 设置引脚工作模式为输入模式
+    gpio_init_struct.Mode = GPIO_MODE_IT_RISING;     // 设置引脚工作模式为上升沿中断
     gpio_init_struct.Pull = GPIO_PULLDOWN;           // 设置下拉电阻
     gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // 设置工作速度为高速
     HAL_GPIO_Init(KEY_UP_PORT, &gpio_init_struct);   // 初始化KEY_UP_PORT端口
+    HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);         // 设置外部中断优先级
+    HAL_NVIC_EnableIRQ(EXTI0_IRQn);                 // 使能外部中断
 
     gpio_init_struct.Pin = KEY0_PIN;                 // 指定要配置的GPIO引脚为KEY0的引脚
-    gpio_init_struct.Mode = GPIO_MODE_INPUT;         // 设置引脚工作模式为输入模式
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;    // 设置引脚工作模式为下降沿中断
     gpio_init_struct.Pull = GPIO_PULLUP;             // 设置上拉电阻
     gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // 设置工作速度为高速
     HAL_GPIO_Init(KEY0_PORT, &gpio_init_struct);     // 初始化KEY0_PORT端口
+    HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);         // 设置外部中断优先级
+    HAL_NVIC_EnableIRQ(EXTI4_IRQn);                 // 使能外部中断
 
     gpio_init_struct.Pin = KEY1_PIN;                 // 指定要配置的GPIO引脚为KEY1的引脚
-    gpio_init_struct.Mode = GPIO_MODE_INPUT;         // 设置引脚工作模式为输入模式
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;    // 设置引脚工作模式为下降沿中断
     gpio_init_struct.Pull = GPIO_PULLUP;             // 设置上拉电阻
     gpio_init_struct.Speed = GPIO_SPEED_HIGH;        // 设置工作速度为高速
     HAL_GPIO_Init(KEY1_PORT, &gpio_init_struct);     // 初始化KEY1_PORT端口
+    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);         // 设置外部中断优先级
+    HAL_NVIC_EnableIRQ(EXTI3_IRQn);                 // 使能外部中断
 }
 
-uint8_t key_get_status()
+void EXTI0_IRQHandler(void) //KEY_UP外部中断服务程序
 {
-    uint8_t keyCurrentState;
-        if(KEY_UP == 1) keyCurrentState = KEY_UP_PRESSED_SHORT;
-        if(KEY0 == 0) keyCurrentState = KEY0_PRESSED_SHORT;
-        if(KEY1 == 0) keyCurrentState = KEY1_PRESSED_SHORT;
-    return keyCurrentState;
+  HAL_GPIO_EXTI_IRQHandler(KEY_UP_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY_UP_PIN); // 清一次中断，避免按键抖动误触发
 }
 
-uint8_t key_scan(void)
+void EXTI4_IRQHandler(void) //KEY0外部中断服务程序
 {
-    static uint8_t previousState = NO_KEY_PRESSED;  // 上一个按键状态，初始为未按下
-    static uint32_t debounceTimer = 0;              // 按键消抖定时器
-    static uint32_t longPressTimer = 0;             // 长按定时器
+  HAL_GPIO_EXTI_IRQHandler(KEY0_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY0_PIN); // 清一次中断，避免按键抖动误触发
+}
 
-    uint32_t currentTimer = 0;                      // 设置当前时间为0
-    uint8_t keyCurrentState = NO_KEY_PRESSED;       // 当前按键状态，默认未按下
+void EXTI3_IRQHandler(void) //KEY1外部中断服务程序
+{
+  HAL_GPIO_EXTI_IRQHandler(KEY1_PIN);
+  __HAL_GPIO_EXTI_CLEAR_IT(KEY1_PIN); // 清一次中断，避免按键抖动误触发
+}
 
-    currentTimer = getCurrentTime();                // 获取当前时间(仿照millis();)
-
-    if ((currentTimer - debounceTimer) >= DEBOUNCE_DELAY_MS)        // 消抖，10MS后再读取按键状态
-    {
-        
-        keyCurrentState = key_get_status();                         // 检测是否有按键被按下
-        
-        if (keyCurrentState != previousState)                       // 检测按键状态变化
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    //HAL_Delay(20); // 按键消抖
+    switch (GPIO_Pin)
+    {   
+    case KEY_UP_PIN:
+        if(KEY_UP == 1) // KEY_UP按下时引脚状态为高电平
         {
-            debounceTimer = currentTimer;                           // 若按键状态不变，更新按键消抖定时器
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY_UP == 0)
+            //         return; // 干扰或未满足长按时间要求
+            Relay_On(); // 短按KEY_UP要执行的操作：打开水泵
         }
-        else
-        {                                                           // 若按键状态改变，检测按键连续一段时间后的状态
-            if ((keyCurrentState != NO_KEY_PRESSED) && ((currentTimer - debounceTimer) >= LONG_PRESS_DELAY_MS))
-            {
-                longPressTimer = currentTimer;                      // 检测到有按键按下且为长按，更新长按定时器
-                keyCurrentState += 3;                               // 将按键状态转为长按
-            }
-        }
-        previousState = keyCurrentState;                            // 更新上一个按键状态
-    }
+        break;
 
-/*    if (keyCurrentState != NO_KEY_PRESSED && (currentTimer - debounceTimer) < LONG_PRESS_DELAY_MS)
-            {}                                                      // 检测短按(似乎没必要)
-*/
-    return keyCurrentState;
+    case KEY0_PIN:
+        if(KEY0 == 0) // KEY0按下时引脚状态为低电平
+        {
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY0 == 1)
+            //         return; // 干扰或未满足长按时间要求
+            Relay_Off(); // 短按KEY0要执行的操作：关闭水泵
+        }
+        break;
+
+    case KEY1_PIN:
+        if(KEY1 == 0) // KEY1按下时引脚状态为低电平
+        {
+            // for(i=0; i<0x7fff; i++)
+            //     if(KEY1 == 1)
+            //         return; // 干扰或未满足长按时间要求
+            Relay_Off(); // 短按KEY1要执行的操作：关闭水泵
+        }
+        break;
+    }
 }

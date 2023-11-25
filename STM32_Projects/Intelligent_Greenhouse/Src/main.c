@@ -24,7 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "../Inc/adc.h"
 #include "uart.h"
-#include "key_new.h"
+#include "key.h"
 #include "relay.h"
 /* USER CODE END Includes */
 
