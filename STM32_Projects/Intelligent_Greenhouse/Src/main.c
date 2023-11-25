@@ -22,10 +22,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "../Inc/adc.h"
+//#include "../Inc/adc.h"
 #include "uart.h"
-#include "key_new.h"
+#include "key.h"
 #include "relay.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -88,12 +89,19 @@ int main(void)
   /* Initialize all configured peripherals */
   //MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+
   /*------------------按键控制水泵-------------------*/
   /*------按下KEY_UP开启水泵，按下其余按钮关闭水泵-----*/
-  key_init_it();	
-  Relay_Init();
+  // key_init_it();	
+  // Relay_Init();
   /*------------------按键控制水泵-------------------*/
+
   //uint8_t humidity; // 土壤湿度值
+
+  /*------------------输出PWM波-------------------*/
+  // 初始化定时器，设置PWM占空比为50%（可根据需要修改）
+  WS2812B_pwm_tim_init(50);
+  /*------------------输出PWM波-------------------*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
