@@ -1,76 +1,72 @@
 #include "../Inc/adc.h"
 
+ADC_HandleTypeDef hadc;
+
 void ADC_Init(void) 
 {
+    // ADCåˆå§‹åŒ–ç»“æ„ä½“é…ç½®
+    hadc.Instance = ADC1;                               // å¯„å­˜å™¨åŸºåœ°å€ï¼ˆé€‰æ‹©ADC1ï¼‰
+    hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;          // æ•°æ®å¯¹é½æ–¹å¼è®¾ç½®ä¸ºå³å¯¹é½
+    hadc.Init.ScanConvMode = ADC_SCAN_DISABLE;          // å•é€šé“,éæ‰«ææ¨¡å¼
+    hadc.Init.ContinuousConvMode = DISABLE;             // å•æ¬¡è½¬æ¢,éè¿ç»­è½¬æ¢
+    hadc.Init.NbrOfConversion = 1;                      // è½¬æ¢çš„é€šé“æ•°ä¸º1
+    hadc.Init.DiscontinuousConvMode = DISABLE;          // è§„åˆ™é€šé“ç»„é—´æ–­æ¨¡å¼ç¦ç”¨
+    hadc.Init.NbrOfDiscConversion = 0;                  // é—´æ–­æ¨¡å¼çš„è§„åˆ™é€šé“ä¸ªæ•°ï¼ˆç¦ç”¨è§„åˆ™é€šé“ç»„é—´æ–­æ¨¡å¼åå¯å¿½ç•¥ï¼‰
+    hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;    // è§¦å‘è½¬æ¢æ–¹å¼ä¸ºè½¯ä»¶è§¦å‘
 
-    ADC_HandleTypeDef hadc;
-    hadc.Instance = ADC1; //Ñ¡ÔñADC1
-
-    // ADC³õÊ¼»¯½á¹¹ÌåÅäÖÃ
-    hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;          // Êı¾İ¶ÔÆë·½Ê½ÉèÖÃÎªÓÒ¶ÔÆë
-    hadc.Init.ScanConvMode = DISABLE;                   // µ¥Í¨µÀÄ£Ê½
-    hadc.Init.ContinuousConvMode = DISABLE;             // µ¥´Î×ª»»,·ÇÁ¬Ğø×ª»»
-    hadc.Init.NbrOfConversion = 1;                      // ×ª»»µÄÍ¨µÀÊıÎª1
-    hadc.Init.DiscontinuousConvMode = DISABLE;          // ²»Á¬Ğø×ª»»Ä£Ê½½ûÓÃ
-    hadc.Init.NbrOfDiscConversion = 1;                  // ²»Á¬Ğø×ª»»µÄÍ¨µÀÊıÎª1
-    hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;    // Íâ²¿´¥·¢×ª»»Ê¹ÓÃÈí¼ş´¥·¢·½Ê½Æô¶¯
-
-    HAL_ADC_Init(&hadc);                                // »áµ÷ÓÃ»Øµ÷º¯ÊıHAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
-    HAL_ADCEx_Calibration_Start(&hadc);                 // Ö´ĞĞADC×Ô¶¯×ÔÎÒĞ£×¼
+    HAL_ADC_Init(&hadc);                                // ä¼šè°ƒç”¨å›è°ƒå‡½æ•°HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
+    HAL_ADCEx_Calibration_Start(&hadc);                 // æ‰§è¡ŒADCè‡ªåŠ¨è‡ªæˆ‘æ ¡å‡†
 }
 
-void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) //»á±»HAL_ADC_Initº¯ÊıËùµ÷ÓÃµÄMSP»Øµ÷º¯Êı£¬ÓÃÀ´´æ·ÅÊ¹ÄÜADCºÍÍ¨µÀ¶ÔÓ¦IOµÄÊ±ÖÓºÍ³õÊ¼»¯IO¿ÚµÈ´úÂë
+void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc) //ä¼šè¢«HAL_ADC_Initå‡½æ•°æ‰€è°ƒç”¨çš„MSPå›è°ƒå‡½æ•°ï¼Œç”¨æ¥å­˜æ”¾ä½¿èƒ½ADCå’Œé€šé“å¯¹åº”IOçš„æ—¶é’Ÿå’Œåˆå§‹åŒ–IOå£ç­‰ä»£ç 
 {
 if(hadc->Instance == ADC1)
  {
-    RCC_PeriphCLKInitTypeDef adc_clk_init = {0};
     GPIO_InitTypeDef gpio_init_struct;
+    RCC_PeriphCLKInitTypeDef adc_clk_init_struct = {0};
     
+    __HAL_RCC_ADC1_CLK_ENABLE(); // ä½¿èƒ½ADC1é€šé“æ—¶é’Ÿ
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_ADC1_CLK_ENABLE();
 
-    // ÉèÖÃ ADC ÍâÉèÊ±ÖÓ
-    adc_clk_init.PeriphClockSelection = RCC_PERIPHCLK_ADC; // Ñ¡Ôñ ADC ÍâÉèÊ±ÖÓÎªÒªÅäÖÃµÄÍâÉèÊ±ÖÓ
-    adc_clk_init.AdcClockSelection = RCC_ADCPCLK2_DIV6; // ½«ADCµÄÊ±ÖÓ·ÖÆµÉèÖÃÎª6£¬ÕâÒâÎ¶×ÅADCµÄÊ±ÖÓÆµÂÊ½«ÎªÖ÷Ê±ÖÓ£¨72MHz£©³ıÒÔ6£¬¼´12MHz¡£
-    HAL_RCCEx_PeriphCLKConfig(&adc_clk_init); // ½«ADCµÄÊ±ÖÓÅäÖÃÓ¦ÓÃµ½Ó²¼ş£¬¸æËßÏµÍ³Ê¹ÓÃ12MHzµÄÊ±ÖÓÆµÂÊÀ´Çı¶¯ADCÄ£¿é¡£
+    // è®¾ç½® ADC å¤–è®¾æ—¶é’Ÿ
+    adc_clk_init_struct.PeriphClockSelection = RCC_PERIPHCLK_ADC; // é€‰æ‹© ADC å¤–è®¾æ—¶é’Ÿä¸ºè¦é…ç½®çš„å¤–è®¾æ—¶é’Ÿ
+    adc_clk_init_struct.AdcClockSelection = RCC_ADCPCLK2_DIV6;     /*ADC çš„è¾“å…¥æ—¶é’Ÿé¢‘ç‡æœ€å¤§å€¼æ˜¯14MHzï¼Œå¦‚æœè¶…è¿‡è¿™ä¸ªå€¼å°†ä¼šå¯¼è‡´ ADC çš„è½¬æ¢ç»“æœå‡†ç¡®åº¦ä¸‹é™ã€‚
+    æ­¤å¤„å°†ADCçš„æ—¶é’Ÿåˆ†é¢‘è®¾ç½®ä¸º6ï¼Œè¿™æ„å‘³ç€ADCçš„è¾“å…¥æ—¶é’Ÿé¢‘ç‡å°†ä¸ºä¸»æ—¶é’Ÿï¼ˆ72MHzï¼‰é™¤ä»¥6ï¼Œå³12MHzã€‚*/
+    HAL_RCCEx_PeriphCLKConfig(&adc_clk_init_struct); // å°†ADCçš„æ—¶é’Ÿé…ç½®åº”ç”¨åˆ°ç¡¬ä»¶ï¼Œå‘Šè¯‰ç³»ç»Ÿä½¿ç”¨12MHzçš„æ—¶é’Ÿé¢‘ç‡æ¥é©±åŠ¨ADCæ¨¡å—ã€‚
 
-    // ÉèÖÃ AD ²É¼¯Í¨µÀ¶ÔÓ¦ IO Òı½Å¹¤×÷Ä£Ê½
-    gpio_init_struct.Pin = GPIO_PIN_1; // Ñ¡ÔñÒı½Å1ÎªÒªÅäÖÃµÄGPIOÒı½Å
-    gpio_init_struct.Mode = GPIO_MODE_ANALOG; // ÉèÖÃGPIOÒı½ÅµÄ¹¤×÷Ä£Ê½ÎªÄ£ÄâÄ£Ê½¡£ÔÚÄ£ÄâÄ£Ê½ÏÂ£¬¸ÃÒı½Å½«ÓÃÓÚÁ¬½Óµ½ADCÍ¨µÀ£¬ÒÔ±ã½øĞĞÄ£ÄâĞÅºÅµÄ²É¼¯
+    // è®¾ç½® AD é‡‡é›†é€šé“å¯¹åº” IO å¼•è„šï¼ˆPA1ï¼‰å·¥ä½œæ¨¡å¼
+    gpio_init_struct.Pin = GPIO_PIN_1; // é€‰æ‹©å¼•è„š1ä¸ºè¦é…ç½®çš„GPIOå¼•è„š
+    gpio_init_struct.Mode = GPIO_MODE_ANALOG; // è®¾ç½®GPIOå¼•è„šçš„å·¥ä½œæ¨¡å¼ä¸ºæ¨¡æ‹Ÿæ¨¡å¼ã€‚åœ¨æ¨¡æ‹Ÿæ¨¡å¼ä¸‹ï¼Œè¯¥å¼•è„šå°†ç”¨äºè¿æ¥åˆ°ADCé€šé“ï¼Œä»¥ä¾¿è¿›è¡Œæ¨¡æ‹Ÿä¿¡å·çš„é‡‡é›†
     
     HAL_GPIO_Init(GPIOA, &gpio_init_struct);
  }
 }
 
-// ¶ÁÈ¡ADCÖµ
-uint16_t ADC_Read(uint32_t channel) 
+// è®¾ç½®ADCé‡‡æ ·é€šé“ã€åºåˆ—ï¼ˆå•é€šé“DMAåˆ™è®¾ç½®ä¸ºADC_REGULAR_RANK_1ï¼‰å’Œæ—¶é—´
+void adc_channel_set(ADC_HandleTypeDef *adc_handle, uint32_t channel, uint32_t rank, uint32_t stime)
 {
-    ADC_HandleTypeDef hadc;
-    ADC_ChannelConfTypeDef sConfig; //Í¨µÀÅäÖÃ½á¹¹Ìå±äÁ¿
-
-    // ÅäÖÃADCÍ¨µÀ
-    hadc.Instance = ADC1;
-    sConfig.Channel = channel;
-    sConfig.Rank = 1; // ÉèÖÃÍ¨µÀÅäÖÃ½á¹¹ÌåµÄÅÅÃûÎª1
-    sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5; // ÉèÖÃÍ¨µÀÅäÖÃ½á¹¹ÌåµÄ²ÉÑùÊ±¼ä
-
-    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+    ADC_ChannelConfTypeDef adc_ch_conf_struct;
     
-    // Æô¶¯ADC×ª»»
-    HAL_ADC_Start(&hadc);
-
-    // µÈ´ı×ª»»Íê³É
-    HAL_ADC_PollForConversion(&hadc, 10);
-
-    // ¶ÁÈ¡ADCÖµ
-    return HAL_ADC_GetValue(&hadc);
+    adc_ch_conf_struct.Channel = channel; // é€šé“
+    adc_ch_conf_struct.Rank = rank; // åºåˆ—
+    adc_ch_conf_struct.SamplingTime = stime; // é‡‡æ ·æ—¶é—´
+    HAL_ADC_ConfigChannel(adc_handle, &adc_ch_conf_struct); // é…ç½®ADCçš„é€šé“ï¼Œå°†é€šé“ä¸ç›¸åº”çš„å‚æ•°ç›¸å…³è”
 }
 
-// Çó¶à´Î¶ÁÈ¡Æ½¾ùÖµ
+// è¯»å–ADCè½¬æ¢ç»“æœ
+uint16_t ADC_Read(uint32_t channel) 
+{
+    adc_channel_set(&hadc, channel, ADC_REGULAR_RANK_1, ADC_SAMPLETIME_239CYCLES_5); // è®¾ç½®é€šé“ï¼Œåºåˆ—å’Œé‡‡æ ·æ—¶é—´
+    HAL_ADC_Start(&hadc); // å¯åŠ¨ADCè½¬æ¢
+    HAL_ADC_PollForConversion(&hadc, 10); // ç­‰å¾…è½¬æ¢å®Œæˆ
+    return (uint16_t)HAL_ADC_GetValue(&hadc); // è¿”å›æœ€è¿‘ä¸€æ¬¡ADC1è§„åˆ™ç»„çš„è½¬æ¢ç»“æœ
+}
+
+// æ±‚å¤šæ¬¡è¯»å–å¹³å‡å€¼
 uint16_t ADC_getAverage( uint8_t times, uint32_t channel)
 {
     uint8_t sum = 0;
-        for (uint8_t i = 0; i < times; i++)     /* »ñÈ¡times´ÎÊı¾İ */
+        for (uint8_t i = 0; i < times; i++)     /* è·å–timesæ¬¡æ•°æ® */
     {
         sum += ADC_Read(channel);
         HAL_Delay(5);
