@@ -43,14 +43,14 @@ if(hadc->Instance == ADC1)
 }
 
 // 设置ADC采样通道、序列（单通道DMA则设置为ADC_REGULAR_RANK_1）和时间
-void adc_channel_set(ADC_HandleTypeDef *adc_handle, uint32_t channel, uint32_t rank, uint32_t stime)
+void adc_channel_set(ADC_HandleTypeDef *hadc, uint32_t channel, uint32_t rank, uint32_t stime)
 {
     ADC_ChannelConfTypeDef adc_ch_conf_struct;
     
     adc_ch_conf_struct.Channel = channel; // 通道
     adc_ch_conf_struct.Rank = rank; // 序列
     adc_ch_conf_struct.SamplingTime = stime; // 采样时间
-    HAL_ADC_ConfigChannel(adc_handle, &adc_ch_conf_struct); // 配置ADC的通道，将通道与相应的参数相关联
+    HAL_ADC_ConfigChannel(hadc, &adc_ch_conf_struct); // 配置ADC的通道，将通道与相应的参数相关联
 }
 
 // 读取ADC转换结果

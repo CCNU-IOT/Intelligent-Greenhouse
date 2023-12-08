@@ -6,7 +6,8 @@
 #define SENSER_PORT  GPIOE
 
 void ADC_Init(void);
-uint16_t ADC_Read(uint32_t channel);
+void adc_channel_set(ADC_HandleTypeDef*, uint32_t, uint32_t, uint32_t);
+uint16_t ADC_Read(uint32_t);
 uint16_t ADC_getAverage(uint8_t, uint32_t);
 
 #endif /*__ADC_H__*/

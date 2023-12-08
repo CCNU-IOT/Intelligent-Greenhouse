@@ -12,7 +12,7 @@ void sensor_init(void)
 
 uint8_t sensor_read(void)
 {
-	if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == 1) // 读取GPIOA的P0口电平（0/1）
+	if(PA0 == 1) // PA0口电平（0/1）
 	{ 
 		HAL_Delay(10);
 		return 1;

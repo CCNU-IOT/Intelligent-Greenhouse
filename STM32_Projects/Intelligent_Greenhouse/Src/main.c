@@ -27,6 +27,8 @@
 #include "key.h"
 #include "relay.h"
 #include "tim.h"
+#include "spi.h"
+#include "rgb.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,9 +89,10 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  //MX_GPIO_Init();
-  /* USER CODE BEGIN 2 */
 
+  /* USER CODE BEGIN 2 */
+    HAL_SPI_MspInit(&spi_rgb_strip_light_handle);
+    spi_rgb_strip_light_init();
   /*------------------按键控制水泵-------------------*/
   /*------按下KEY_UP开启水泵，按下其余按钮关闭水泵-----*/
   // key_init_it();	
@@ -100,7 +103,7 @@ int main(void)
 
   /*------------------输出PWM波（由PE9输出）-------------------*/
   // 初始化定时器，设置PWM占空比为50%（可根据需要修改）
-  WS2812B_pwm_tim_init(50);
+  //WS2812B_pwm_tim_init(50);
   /*------------------输出PWM波（由PE9输出）-------------------*/
   /* USER CODE END 2 */
 
@@ -108,8 +111,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    MX_GPIO_Init();
     //HAL_Delay(1000);
     /* USER CODE END WHILE */
+    /* USER CODE BEGIN 3 */
 	  // Relay_On();
 	  // HAL_Delay(1000);
     // Relay_Off();
@@ -124,8 +129,20 @@ int main(void)
 		//   printf("rain：%.2f\r\n",humidity);
 
 		// Delay_Ms(1000);
+      spi_rgb_strip_light_display_color(RED);
+      HAL_Delay(500);
 
-    /* USER CODE BEGIN 3 */
+      spi_rgb_strip_light_display_color(GREEN);
+      HAL_Delay(500);
+
+      spi_rgb_strip_light_display_color(BLUE);
+      HAL_Delay(500);
+
+      spi_rgb_strip_light_display_color(YELLOW);
+      HAL_Delay(500);
+
+      spi_rgb_strip_light_display_color(PURPLE);
+      HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
