@@ -96,7 +96,7 @@ static void spi_rgb_strip_light_write_data(uint8_t *pbuf)
 void spi_rgb_strip_light_display_color(RGBColor_TypeDef rgb_strip_light_color)
 {
     uint8_t i = 0;          /*循环变量*/
-    uint8_t k = 0;
+//    uint8_t k = 0;
     for (i = 0 ; i < RGB_LIGHT_BEADS_NUM; i++)
     {
         spi_rgb_strip_light_setcolor(i, rgb_strip_light_color);
